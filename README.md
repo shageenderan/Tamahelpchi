@@ -1,4 +1,5 @@
 You may also view this app online at: https://tamahelpchi.herokuapp.com/
+This app was developed with a mobile UI in mind. For the best viewing experience, kindly go to your browsers developers tools (F12 in Chrome) and change to a mobile viewport (Ctrl-Shift-M in Chrome), preferably iPhone 6/7/8 Plus
 
 ## Running Locally
 
