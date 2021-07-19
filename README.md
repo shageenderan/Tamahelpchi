@@ -1,4 +1,4 @@
-You may also view this app online at: 
+You may also view this app online at: https://tamahelpchi.herokuapp.com/
 
 ## Running Locally
 
