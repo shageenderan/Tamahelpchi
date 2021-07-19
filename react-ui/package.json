@@ -1,5 +1,5 @@
 {
-  "name": "examples",
+  "name": "tamahelpchi",
   "version": "0.1.1",
   "private": true,
   "prettier": {
@@ -45,7 +45,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "webpack --progress --colors --env production"
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
