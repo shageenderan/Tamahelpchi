@@ -56,12 +56,12 @@ function Task({ task, onTglStatus }) {
     } = useStopwatch({ autoStart: false });
 
     const history = useHistory();
-    const iconBtnStyles = useSizedIconButtonStyles({ color: "#524c4c", childSize: 20 });
+    const iconBtnStyles = useSizedIconButtonStyles({ color: "#524c4c", childSize: 21 });
 
     return (
         <div className={`card text-left ${styles.card}`} key={task.id}>
             <div className="row" onClick={() => history.push('/tasks/exercise')}>
-                <div style={{ display: "flex" }}>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <h4 style={{ marginLeft: "5px" }}>{task.desc}</h4>
                     <StyledTooltip style={{marginLeft: "-8px", marginTop: "-5px"}} title={'See details'}>
                         <IconButton classes={iconBtnStyles}>
