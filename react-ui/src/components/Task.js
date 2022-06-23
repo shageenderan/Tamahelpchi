@@ -4,6 +4,7 @@ import TimerIcon from '@material-ui/icons/Timer';
 import moment from 'moment'
 
 import LoyaltyOutlinedIcon from '@material-ui/icons/LoyaltyOutlined';
+import { useSizedIconButtonStyles } from '@mui-treasury/styles/iconButton/sized';
 
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
@@ -13,7 +14,16 @@ import { useHistory } from 'react-router-dom';
 
 import { useStopwatch } from 'react-timer-hook';
 import DigitalTimer from './DigitalTimer';
+import Tooltip from '@material-ui/core/Tooltip';
+import IconButton from '@material-ui/core/IconButton';
+import CallMade from '@material-ui/icons/CallMade';
 
+const StyledTooltip = withStyles({
+    tooltip: {
+        backgroundColor: 'rgba(0,0,0,0.72)',
+        color: '#fff',
+    },
+})(Tooltip);
 
 const useStyles = makeStyles(() => ({
     card: {
@@ -46,11 +56,19 @@ function Task({ task, onTglStatus }) {
     } = useStopwatch({ autoStart: false });
 
     const history = useHistory();
+    const iconBtnStyles = useSizedIconButtonStyles({ color: "#524c4c", childSize: 20 });
 
     return (
-        <div className={`card text-left ${styles.card}`} key={task.id} onClick={()=>history.push('/tasks/exercise')}>
-            <div className="row">
-                <h4 style={{ marginLeft: "5px" }}>{task.desc}</h4>
+        <div className={`card text-left ${styles.card}`} key={task.id}>
+            <div className="row" onClick={() => history.push('/tasks/exercise')}>
+                <div style={{ display: "flex" }}>
+                    <h4 style={{ marginLeft: "5px" }}>{task.desc}</h4>
+                    <StyledTooltip style={{marginLeft: "-8px", marginTop: "-5px"}} title={'See details'}>
+                        <IconButton classes={iconBtnStyles}>
+                            <CallMade />
+                        </IconButton>
+                    </StyledTooltip>
+                </div>
             </div>
             <div style={{ display: "flex", justifyContent: "center" }} className="row">
                 <div className="col-8 is-center" style={{ maxHeight: "15vh" }}>

@@ -66,7 +66,7 @@ export default function ExercisePage(props) {
         </div>
 
         <div className={styles.card}>
-            <div style={{ border: '2px solid', borderColor: 'black', borderRadius: 16, height: "200px" }}><Graph></Graph></div>
+            <div style={{ border: '2px solid', borderColor: 'black', borderRadius: 16, height: "200px"}}><Graph></Graph></div>
             <div style={{ marginTop: "10px" }}></div>
             <div style={{ border: '2px solid', borderColor: 'black', borderRadius: 16 }}><Graph></Graph></div>
             <div style={{ marginTop: "10px" }}></div>
@@ -104,7 +104,7 @@ const initialState = {
 const data = [
     {
         name: 'Mon',
-        uv: null,
+        uv: 2000,
         pv: 2400,
         amt: 2400,
     },
@@ -164,7 +164,7 @@ class Graph extends PureComponent {
                     }}
                 >
                     
-                    <XAxis dataKey="name" />
+                    <XAxis tick={{ fill: 'black' }} stroke="black" dataKey="name" />
                     <YAxis type="number" domain={['dataMin-100', 'dataMax+50']} hide/>
                     <defs>
                         <linearGradient id="colorPv2" x1="0" y1="0" x2="0" y2="1">
