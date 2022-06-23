@@ -47,6 +47,16 @@
       },
       "can_expire": false,
       "progress": 0
+    },
+    {
+      "desc": "Exercise",
+      "points": 40,
+      "start": "2022-06-23T18:10:33.123Z",
+      "end": {
+        "day": 1
+      },
+      "can_expire": false,
+      "progress": 0
     }
   ]
 }

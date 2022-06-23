@@ -7,10 +7,6 @@ import SideMenu from './components/SideMenu'
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import Rating from '@material-ui/lab/Rating';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import FastfoodIcon from '@material-ui/icons/Fastfood';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faHamburger, faTint } from '@fortawesome/free-solid-svg-icons';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Shop from './components/Shop'
@@ -24,6 +20,7 @@ import { loadCSS } from 'fg-loadcss';
 import moment from 'moment'
 
 import { UserAPI } from "./apis/UserAPI";
+import ExercisePage from "./components/ExercisePage";
 
 const TAU = Math.PI * 2
 
@@ -74,11 +71,11 @@ function Home(props) {
   return [
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <SideMenu></SideMenu>
-      <button onClick={()=>props.eat()}>FEED HIM</button>
+      <button onClick={() => props.eat()}>FEED HIM</button>
       <Inventory {...props}></Inventory>
     </div>
     ,
-    <Illustration onClick={()=>{console.log("hi")}} style={{ "height": "600px" }} zoom={1.2} dragRotate={true} rotate={{ x: (TAU * 10) / 128, y: -0.05 }}>
+    <Illustration onClick={() => { console.log("hi") }} style={{ "height": "600px" }} zoom={1.2} dragRotate={true} rotate={{ x: (TAU * 10) / 128, y: -0.05 }}>
       <Turtle eating={props.isEating}></Turtle>
     </Illustration>,
     <div style={{ "textAlign": "center", "marginTop": "-150px" }}>
@@ -106,7 +103,7 @@ function Home(props) {
         precision={0.5}
         icon={<Icon className="fa fa-tint"></Icon>}
         readOnly
-        // style={{ "padding": "10px" }}
+      // style={{ "padding": "10px" }}
       />
     </div>
 
@@ -126,10 +123,10 @@ export default class App extends React.Component {
     }
   }
 
-  eat = () => {this.setState({isEating: true}, ()=>{setTimeout(()=>{this.setState({isEating: false})}, 2500)})}
+  eat = () => { this.setState({ isEating: true }, () => { setTimeout(() => { this.setState({ isEating: false }) }, 2500) }) }
 
   addTask = (newTask) => {
-    UserAPI.AddTask(newTask).then(res => {console.log(res); this.getUserData()})
+    UserAPI.AddTask(newTask).then(res => { console.log(res); this.getUserData() })
   }
 
   updateInventory = (newItem, category) => {
@@ -164,7 +161,7 @@ export default class App extends React.Component {
   }
 
   getUserData = async () => {
-    fetch('/api/user').then((resp) => resp.json()).then(res=> {return {...res, tasks:res.tasks.map(elem => {return {...elem, "start": moment(elem.start), "end": moment(elem.end)}})}}).then((res) => this.setState({ ...res }, () => console.log("State:", this.state)))
+    fetch('/api/user').then((resp) => resp.json()).then(res => { return { ...res, tasks: res.tasks.map(elem => { return { ...elem, "start": moment(elem.start), "end": moment(elem.end) } }) } }).then((res) => this.setState({ ...res }, () => console.log("State:", this.state)))
   }
 
   componentDidMount() {
@@ -180,11 +177,14 @@ export default class App extends React.Component {
             <Route path="/shop">
               <Shop {...this.state} updateInventory={this.updateInventory} updatePoints={this.updatePoints}></Shop>
             </Route>
+            <Route path="/tasks/exercise">
+              <ExercisePage {...this.state}></ExercisePage>
+            </Route>
             <Route path="/tasks">
               <Tasks tasks={this.state.tasks}></Tasks>
             </Route>
             <Route path="/points">
-              <PointsShop addTask={this.addTask}/>
+              <PointsShop addTask={this.addTask} />
             </Route>
             <Route path="/help">
               <Help></Help>

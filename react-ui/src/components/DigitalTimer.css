@@ -1,0 +1,111 @@
+ 
+  .digital-timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 18vh;
+    margin-top: -20px;
+  }
+  
+  .timer-display-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    background-image: url('https://assets.ccbp.in/frontend/react-js/digital-timer-elapsed-bg.png');
+    background-size: cover;
+    background-position: center;
+  }
+
+  .elapsed-time-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    width: 70px;
+    height: 70px;
+    border-radius: 100%;
+  }
+  
+  .elapsed-time {
+    color: #00d9f5;
+    font-family: 'Roboto';
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0px;
+  }
+  
+  .timer-state {
+    color: #1e293b;
+    font-family: 'Roboto';
+    font-size: 15px;
+    font-weight: bold;
+    margin: 0px;
+  }
+
+/* ***************************************************************************** */
+
+  @media screen and (min-width: 768px) {
+    .digital-timer-container {
+      flex-direction: row;
+      max-width: 1140px;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .heading {
+      font-size: 48px;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .elapsed-time-container {
+      width: 150px;
+      height: 150px;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .elapsed-time-container {
+      width: 200px;
+      height: 200px;
+    }
+  }
+
+  @media screen and (min-width: 768px) {
+    .elapsed-time {
+      font-size: 48px;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .timer-state {
+      font-size: 24px;
+    }
+  }
+
+
+  @media (min-width: 576px) {
+    .timer-display-container {
+      width: 450px;
+      height: 320px;
+    }
+  }
+  
+  @media screen and (min-width: 768px) {
+    .timer-display-container {
+      width: 600px;
+      height: 450px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .timer-display-container {
+      width: 600px;
+      height: 600px;
+    }
+  }
+  

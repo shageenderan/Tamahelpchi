@@ -30,7 +30,8 @@ function Tasks({ tasks, onTglStatus }) {
             </div>
             <h1 style={{ textAlign: "center" }}>Tasks</h1>
             <div style={{ display: "flex", flexDirection:"column", justifyContent: "space-between" }}>
-                <div style={{ overflow: 'auto', maxHeight: "55vh" }}>
+                {/* <div style={{ overflow: 'auto', maxHeight: "55vh" }}> */}
+                <div style={{ overflow: 'auto', maxHeight: 600 }}>
                     <ReactList
                         itemRenderer={(index, key) => {
                             return (
@@ -42,9 +43,9 @@ function Tasks({ tasks, onTglStatus }) {
                         type='simple'
                     />
                 </div>
-                <div style={{bottom: "10px", position: "absolute", left: "15%"}}>
+                {/* <div style={{bottom: "10px", position: "absolute", left: "15%"}}>
                     {tasks.length <= 50 ? <Image height="250px" src={task_turtles[0]} rounded></Image> : null}
-                </div>
+                </div> */}
             </div>            
         </div>
     );
