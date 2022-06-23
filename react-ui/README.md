@@ -1,10 +1,5 @@
 ```shell
-git clone https://github.com/drcmda/react-three-fiber
-cd react-three-fiber
-yarn
-cd examples
-yarn
-yarn start
+npm start
 ```
 
-Edit examples/index.js to import the demo you're interested in. I use this mainly for debugging and testing, a real showcase will follow.
+npm start will run the react ui locally

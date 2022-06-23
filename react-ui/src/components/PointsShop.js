@@ -31,7 +31,7 @@ import mindfullness_2 from '../assets/mindfullness_2.png'
 import mindfullness_3 from '../assets/mindfullness_3.jpg'
 import MindfullnessAccordion from './MindfullnessAccordion';
 
-
+import moment from 'moment'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -52,16 +52,16 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function PointsShop() {
+export default function PointsShop(props) {
     // const classes = useStyles();
     const points = [
-        <PointsCard title="Exercise" subtitle="Earn points by exercising" img={exercising} points={40} accordion={<ExerciseAccordion />}></PointsCard>,
-        <PointsCard title="Sleeping" subtitle="Earn points by sleeping consistently" img={sleeping_2} points={200} accordion={<SleepingAccordion />}></PointsCard>,
-        <PointsCard title="Meditation" subtitle="Earn points by practicing mildfulness" img={mindfullness_2} points={50} accordion={<MindfullnessAccordion />}></PointsCard>,
+        <PointsCard title="Exercise" borderColor='#ec5183' subtitle="Earn points by exercising" img={exercising} points={40} accordion={<ExerciseAccordion />} addTask={props.addTask} duration={{ day: 1 }} can_expire={false}></PointsCard>,
+        <PointsCard title="Sleeping" borderColor="rgb(81 93 236)" subtitle="Earn points by sleeping consistently" img={sleeping_2} points={200} accordion={<SleepingAccordion /> }  addTask={props.addTask} duration={{ hour: 8}} can_expire={true}></PointsCard>,
+        <PointsCard title="Meditation" borderColor="rgb(4 167 39)"  subtitle="Earn points by practicing mildfulness" img={mindfullness_2} points={50} accordion={<MindfullnessAccordion />}  addTask={props.addTask} duration={{ minute: 15 }} can_expire={true}></PointsCard>,
 
-        <PointsCard title="Meditation" subtitle="Earn points by practicing mildfulness" img={mindfullness_3} points={50} accordion={<MindfullnessAccordion />}></PointsCard>,
-        <PointsCard title="Eating" subtitle="Earn points by eating healty meals" img={eating_2} points={100} accordion={<EatingAccordion />}></PointsCard>,
-        <PointsCard title="Coming Soon..." subtitle="Stay tuned for more ways to earn points" img={eating_1} points={100} accordion={<EatingAccordion />}></PointsCard>
+        <PointsCard title="Meditation" subtitle="Earn points by practicing mildfulness" img={mindfullness_3} points={50} accordion={<MindfullnessAccordion />}  addTask={props.addTask}></PointsCard>,
+        <PointsCard title="Eating" subtitle="Earn points by eating healty meals" img={eating_2} points={100} accordion={<EatingAccordion />}  addTask={props.addTask} duration={{ second: 0 }} can_expire={false}></PointsCard>,
+        <PointsCard title="Coming Soon..." subtitle="Stay tuned for more ways to earn points" img={eating_1} points={100} accordion={<EatingAccordion />}  addTask={props.addTask}></PointsCard>
 
     ]
     return (

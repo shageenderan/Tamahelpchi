@@ -7,5 +7,46 @@
       "original"
     ]
   },
-  "tasks": []
+  "tasks": [
+    {
+      "desc": "Exercise",
+      "points": 40,
+      "start": "2022-06-15T11:39:30.625Z",
+      "end": {
+        "day": 1
+      },
+      "can_expire": false,
+      "progress": 0
+    },
+    {
+      "desc": "Sleeping",
+      "points": 200,
+      "start": "2022-06-15T11:39:37.432Z",
+      "end": {
+        "hour": 8
+      },
+      "can_expire": true,
+      "progress": 0
+    },
+    {
+      "desc": "Meditation",
+      "points": 50,
+      "start": "2022-06-15T11:39:40.034Z",
+      "end": {
+        "minute": 15
+      },
+      "can_expire": true,
+      "progress": 0
+    },
+    {
+      "desc": "Eating",
+      "points": 100,
+      "start": "2022-06-15T11:39:43.375Z",
+      "end": {
+        "second": 0
+      },
+      "can_expire": false,
+      "progress": 0
+    }
+  ]
 }

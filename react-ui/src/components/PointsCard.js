@@ -96,7 +96,7 @@ const useStyles = makeStyles(() => ({
   card: {
     border: '2px solid',
     // borderColor: '#519fec',
-    borderColor: '#ec5183',
+    
     borderRadius: 16,
     transition: '0.4s',
     '&:hover': {
@@ -123,7 +123,7 @@ export const PointsCard = React.memo(function ShowcaseCard(props) {
     [
       <Grid container spacing={4} justify={'center'}>
         <Grid item xs={11} sm={4} md={3}>
-          <Column onClick={handleClickOpen} boxShadow={3} className={styles.card} p={{ xs: 0.5, sm: 0.75, lg: 1 }} gap={gap}>
+          <Column onClick={handleClickOpen} boxShadow={3} style={{borderColor: props.borderColor ?  props.borderColor : '#ec5183'}} className={styles.card} p={{ xs: 0.5, sm: 0.75, lg: 1 }} gap={gap}>
             <CardHeader {...props} />
             <Item>
               <Box maxHeight={250} bgcolor={'#F4F7FA'} borderRadius={8}>
@@ -134,7 +134,7 @@ export const PointsCard = React.memo(function ShowcaseCard(props) {
           </Column>
         </Grid>
       </Grid>,
-      <PointsModal accordion={props.accordion} title={props.title} open={open} handleClose={handleClose}></PointsModal>
+      <PointsModal {...props} open={open} handleClose={handleClose}></PointsModal>
     ]
 
   );

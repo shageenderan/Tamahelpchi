@@ -30,6 +30,9 @@ if (!isDev && cluster.isMaster) {
   // Priority serve any static files.
   app.use(express.static(path.resolve(__dirname, '../react-ui/build')));
   app.use(bodyParser.json());
+  app.use(express.urlencoded({
+    extended: true
+}))
 
   const readFile = (
     callback,
@@ -85,6 +88,20 @@ if (!isDev && cluster.isMaster) {
       writeFile(JSON.stringify(data, null, 2), () => {
         res.status(200).send('Inventory Updated');
       });
+    });
+  });
+
+  // Add task
+  app.post('/api/user/tasks', function (req, res) {
+    console.log("[POST] to tasks", req.body)
+    readFile(data => { 
+      // add the new task
+      let new_task =  JSON.parse(req.body.task);
+      data["tasks"].push(new_task.task);
+
+      writeFile(JSON.stringify(data, null, 2), () => {
+        res.status(200).send('Tasks Updated');
+      })
     });
   });
 

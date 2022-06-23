@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 import Slide from '@material-ui/core/Slide';
-import ExerciseAccordion from './ExerciseAccordion';
+import moment from 'moment'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -58,6 +58,15 @@ const DialogActions = withStyles((theme) => ({
 }))(MuiDialogActions);
 
 export default function PointsModal(props) {
+    const task = {
+        desc: props.title,
+        points: props.points,
+        start: moment(),
+        end: props.duration,
+        can_expire: props.can_expire,
+        progress: 0,
+    }
+    console.log(task)
     return (
         <div>
             <Dialog TransitionComponent={Transition} onClose={props.handleClose} aria-labelledby="customized-dialog-title" open={props.open}>
@@ -68,7 +77,7 @@ export default function PointsModal(props) {
                     {props.accordion}
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={props.handleClose} color="primary">
+                    <Button onClick={() => { props.addTask({ task }); props.handleClose() }} color="primary">
                         Add to tasks
                     </Button>
                 </DialogActions>

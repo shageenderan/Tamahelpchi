@@ -1,10 +1,16 @@
+import "./assets/styles.css";
+
 import React, { useRef, useState, useEffect } from 'react'
 import Turtle from './components/Turtle'
-import { Illustration, Anchor, Ellipse, Shape, RoundedRect, Hemisphere, useRender } from './components/react-zdog'
+import { Illustration, Anchor, Ellipse, Shape, RoundedRect, Hemisphere, useRender } from 'react-zdog'
 import SideMenu from './components/SideMenu'
-import Button from '@material-ui/core/Button'
+import { withStyles, makeStyles } from '@material-ui/core/styles';
+import Rating from '@material-ui/lab/Rating';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import FastfoodIcon from '@material-ui/icons/Fastfood';
 
-import LocalMallIcon from '@material-ui/icons/LocalMall'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faHamburger, faTint } from '@fortawesome/free-solid-svg-icons';
 
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import Shop from './components/Shop'
@@ -12,18 +18,100 @@ import Inventory from './components/Inventory'
 import PointsShop from './components/PointsShop'
 import Tasks from './components/Tasks'
 import Help from './components/Help'
+import Container from '@material-ui/core/Container';
+import { Icon } from '@material-ui/core';
+import { loadCSS } from 'fg-loadcss';
+import moment from 'moment'
+
+import { UserAPI } from "./apis/UserAPI";
 
 const TAU = Math.PI * 2
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > .fa': {
+      margin: theme.spacing(2),
+    },
+  },
+}));
+
+const StyledHeartRating = withStyles({
+  iconFilled: {
+    color: '#ff3d47',
+  },
+  iconHover: {
+    color: '#ff3d47',
+  },
+})(Rating);
+
+const StyledWaterRating = withStyles({
+  iconFilled: {
+    color: '#00b8ff',
+  },
+  iconHover: {
+    color: '#00b8ff',
+  },
+})(Rating);
+
+const StyledHungerRating = withStyles({
+  iconFilled: {
+    color: '#ff8d00d9',
+  },
+  iconHover: {
+    color: '#ff8d00d9',
+  },
+})(Rating);
+
+
 function Home(props) {
+  const classes = useStyles();
+
+  loadCSS(
+    'https://use.fontawesome.com/releases/v5.12.0/css/all.css',
+    document.querySelector('#font-awesome-css'),
+  );
+
   return [
     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
       <SideMenu></SideMenu>
+      <button onClick={()=>props.eat()}>FEED HIM</button>
       <Inventory {...props}></Inventory>
-    </div>,
-    <Illustration zoom={1.2} dragRotate={true} rotate={{ x: (TAU * 10) / 128, y: -0.05 }}>
-      <Turtle></Turtle>
+    </div>
+    ,
+    <Illustration onClick={()=>{console.log("hi")}} style={{ "height": "600px" }} zoom={1.2} dragRotate={true} rotate={{ x: (TAU * 10) / 128, y: -0.05 }}>
+      <Turtle eating={props.isEating}></Turtle>
     </Illustration>,
+    <div style={{ "textAlign": "center", "marginTop": "-150px" }}>
+      <StyledHeartRating
+        name="read-only"
+        value={5}
+        precision={0.5}
+        icon={<FavoriteIcon></FavoriteIcon>}
+        readOnly
+      />
+    </div>,
+    <div className={classes.root} style={{ "textAlign": "center" }}>
+      <StyledHungerRating
+        name="read-only"
+        value={5}
+        precision={0.5}
+        icon={<Icon className="fa fa-hamburger"></Icon>}
+        readOnly
+      />
+    </div>,
+    <div className={classes.root} style={{ "textAlign": "center" }}>
+      <StyledWaterRating
+        name="read-only"
+        value={5}
+        precision={0.5}
+        icon={<Icon className="fa fa-tint"></Icon>}
+        readOnly
+        // style={{ "padding": "10px" }}
+      />
+    </div>
+
+
+
   ]
 }
 
@@ -33,13 +121,20 @@ export default class App extends React.Component {
     this.state = {
       points: 0,
       inventory: { food: [], clothes: [], backgrounds: [] },
-      tasks: []
+      tasks: [],
+      isEating: false,
     }
+  }
+
+  eat = () => {this.setState({isEating: true}, ()=>{setTimeout(()=>{this.setState({isEating: false})}, 2500)})}
+
+  addTask = (newTask) => {
+    UserAPI.AddTask(newTask).then(res => {console.log(res); this.getUserData()})
   }
 
   updateInventory = (newItem, category) => {
     console.log("inventory update:", newItem, category)
-    const updatedInventory = [ ...this.state.inventory[category] ]
+    const updatedInventory = [...this.state.inventory[category]]
     console.log("Initial:", updatedInventory)
     if (updatedInventory.filter(item => item.title === newItem.title).length) {
       // item already exists, update the quantity
@@ -54,22 +149,22 @@ export default class App extends React.Component {
       }
     }
     else {
-    // add item to inventory
+      // add item to inventory
       updatedInventory.push(newItem)
     }
     console.log("Old Inventory:", this.state.inventory)
 
-    console.log("New Inventory:", {...this.state.inventory, [category]: updatedInventory})
-    this.setState({inventory: {...this.state.inventory, [category]: updatedInventory}})
+    console.log("New Inventory:", { ...this.state.inventory, [category]: updatedInventory })
+    this.setState({ inventory: { ...this.state.inventory, [category]: updatedInventory } })
   }
 
-  updatePoints = (newPoints) => { 
+  updatePoints = (newPoints) => {
     const updatedPoints = newPoints
-    this.setState({points: updatedPoints})
+    this.setState({ points: updatedPoints })
   }
 
   getUserData = async () => {
-    fetch('/api/user').then((resp) => resp.json()).then((res) => this.setState({ ...res }, () => console.log(this.state)))
+    fetch('/api/user').then((resp) => resp.json()).then(res=> {return {...res, tasks:res.tasks.map(elem => {return {...elem, "start": moment(elem.start), "end": moment(elem.end)}})}}).then((res) => this.setState({ ...res }, () => console.log("State:", this.state)))
   }
 
   componentDidMount() {
@@ -86,19 +181,19 @@ export default class App extends React.Component {
               <Shop {...this.state} updateInventory={this.updateInventory} updatePoints={this.updatePoints}></Shop>
             </Route>
             <Route path="/tasks">
-              <Tasks></Tasks>
+              <Tasks tasks={this.state.tasks}></Tasks>
             </Route>
             <Route path="/points">
-              <PointsShop />
+              <PointsShop addTask={this.addTask}/>
             </Route>
             <Route path="/help">
               <Help></Help>
             </Route>
             <Route path="/home">
-              <Home {...this.state} updateInventory={this.updateInventory} updatePoints={this.updatePoints}/>
+              <Home {...this.state} eat={this.eat} updateInventory={this.updateInventory} updatePoints={this.updatePoints} />
             </Route>
             <Route path="/" exact>
-              <Home {...this.state} updateInventory={this.updateInventory} updatePoints={this.updatePoints} />
+              <Home {...this.state} eat={this.eat} updateInventory={this.updateInventory} updatePoints={this.updatePoints} />
             </Route>
           </Switch>
         </div>
