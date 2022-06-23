@@ -1,6 +1,12 @@
 import ReactDOM from 'react-dom'
 import React, { useRef, useState, useEffect } from 'react'
-import { Illustration, Anchor, Ellipse, Shape, RoundedRect, Hemisphere, useRender } from './react-zdog'
+import { Illustration, Anchor, Ellipse, Shape, RoundedRect, Hemisphere, useRender, Group, Cylinder, Cone } from 'react-zdog'
+import { a, useSpring } from '@react-spring/zdog'
+import useSound from 'use-sound';
+import Chewing from '../assets/sounds/chewing.mp3'
+
+import PilgrimHat from './cosmetics/PilgrimHat'
+import Carrot from './cosmetics/Carrot'
 
 /** --- Basic, re-usable shapes -------------------------- */
 const TAU = Math.PI * 2
@@ -15,37 +21,8 @@ const Eye = props => (
 )
 
 const Mouth = props => (
-  <Ellipse diameter={10} quarters={2} translate={{ x: 0, y: 24, z: -10 }} rotate={{ x: props.mood, z: TAU / 4 }} color={face_color} stroke={3} />
+  <a.Ellipse diameter={10} quarters={2} translate={{ x: 0, y: 110, z: 5 }} rotate={{ x: props.mood, z: TAU / 4 }} color={face_color} stroke={3} />
 )
-
-// class Mouth extends React.Component {
-//   constructor(props) {
-//     super(props)
-//     this.state = {
-//       quarters: 4
-//     }
-//   }
-
-// munch = () => {
-//   console.log(this.state.quarters)
-//   this.state.quarters === 2 ? this.setState({quarters: 4}) :  this.setState({quarters: 2})
-// }
-
-// tick = setInterval(() => {
-//   console.log("munch")
-//   if (this.props.eating) this.munch()
-// }, 2000)
-
-//   componentWillUnmount() {
-//     clearInterval(this.tick)
-//   }
-
-//   render() {
-//     return (
-//       <Ellipse diameter={10} quarters={this.state.quarters} translate={{ x: 0, y: 24, z: -10 }} rotate={{ x: this.props.mood, z: TAU / 4 }} color={face_color} stroke={3}></Ellipse>
-//     )
-//   }
-// }
 
 const body_color = '#A4C74B',
   face_color = '#4B264B',
@@ -55,7 +32,29 @@ const body_color = '#A4C74B',
 
 /** --- Assembly ----------------------------------------- */
 export default function Turtle(props) {
-  // Change motion every second
+  const [up, setUp] = useState(true)
+  const [food_pos, set_food_pos] = useState({ x: 0, y: 130, z: 3 })
+
+  const [play, { stop }] = useSound(
+    Chewing,
+    { volume: 1 }
+  );
+
+  useEffect(() => void setInterval(() => setUp(previous => !previous), 200), [])
+
+  useEffect(() => { if(props.eating) {console.log("playing sound"); play()} else {stop()} }, [props.eating])
+
+  useEffect(() => {
+    const interval = setInterval(() => { props.eating ? set_food_pos(previous => { return { ...previous, y: previous.y - 1 } }) : set_food_pos({ x: 0, y: 130, z: 3 }) }, 200)
+    return () => clearInterval(interval)
+  },
+    [props.eating]
+  )
+
+  // useEffect(() => void setInterval(() => {console.log("eating", props.eating); props.eating ? set_food_pos(previous => {return {...previous, y: previous.y-1}}) : set_food_pos({  x: 0, y: 130, z: 0 })}, 200), [props.eating])
+
+  const { openMouth } = useSpring({ openMouth: up ? true : false })
+
   let fwd = true;
   let walk = 0;
 
@@ -88,22 +87,43 @@ export default function Turtle(props) {
     }
     walk += 1;
   })
+
   return (
     // Shell
     <Hemisphere diameter={124} stroke={false} color={shell_color} rotate={{ x: TAU / 4 }} {...props}>
-      <Ellipse translate={{ z: -1 }} diameter={126} stroke={12} color={accent_color} />
+      <Ellipse translate={{ z: -6 }} diameter={126} stroke={12} color={accent_color} />
       <Ellipse translate={{ z: -8 }} diameter={90} stroke={8} color={tummy_color} fill />
 
       {/* head */}
-      <Anchor ref={head_ref} >
-        <Shape translate={{ y: 90, z: 15 }} stroke={55} color={body_color}>
-          <Eye pos={{ x: -16, y: 10, z: 3 }} />
-          <Eye pos={{ x: 16, y: 10, z: 3 }} />
-          <Mouth mood={HAPPY} />
 
-        </Shape>
-      </Anchor>
+      <a.Anchor ref={head_ref}>
+        <Shape translate={{ y: 90, z: 15 }} stroke={55} color={body_color} />
+        <Eye pos={{ x: -16, y: 100, z: 18 }} />
+        <Eye pos={{ x: 16, y: 100, z: 18 }} />
+        {/* <Mouth mood={HAPPY} /> */}
+        {/* Mouth */}
+        {props.eating ?
+          <Group>
+            <a.Group translate={food_pos} visible={food_pos.y >= 120}>
+              {/* Food */}
+              <Carrot></Carrot>
+            </a.Group>
+            <a.Ellipse diameter={13} quarters={2} translate={{ x: 0, y: 110, z: 5 }} fill={openMouth} rotate={{ x: HAPPY, z: TAU / 4 }} color={face_color} stroke={3} />
+            {/* <a.Shape diameter={10} translate={food_pos} visible={food_pos.y >= 110} color={"red"} stroke={10} /> */}
+            
+          </Group>
+          :
+          <a.Ellipse diameter={13} quarters={2} translate={{ x: 0, y: 110, z: 5 }} rotate={{ x: HAPPY, z: TAU / 4 }} color={face_color} stroke={3} />
+        }
 
+
+
+        {/* Head Cosmetics*/}
+        <Anchor translate={{ y: 90, z: 20 }}>
+          <PilgrimHat></PilgrimHat>
+        </Anchor>
+
+      </a.Anchor>
 
       {/* Neck */}
       <Shape path={[{ x: 0, y: 40, z: -14 }, // start at 1st point (in shell)
@@ -116,52 +136,53 @@ export default function Turtle(props) {
         closed={false} stroke={24} color={body_color}></Shape>
 
       {/* Legs */}
-      <Anchor ref={leg_l}>
-        <Leg path={[
-          { x: -30, y: 28, z: -16 }, // start at 1st point (in shell)
-          {
-            arc: [
-              { x: -60, y: 34, z: -24 }, // corner
-              { x: -60, y: 36, z: -36 }, // end point (in head)
-            ]
-          },
-        ]} />
+      <Group>
+        <Anchor ref={leg_l}>
+          <Leg path={[
+            { x: -30, y: 28, z: -16 }, // start at 1st point (in shell)
+            {
+              arc: [
+                { x: -60, y: 34, z: -24 }, // corner
+                { x: -60, y: 36, z: -36 }, // end point (in head)
+              ]
+            },
+          ]} />
 
-        <Leg path={[
-          { x: -30, y: -28, z: -16 }, // start at 1st point (in shell)
-          {
-            arc: [
-              { x: -60, y: -34, z: -24 }, // corner
-              { x: -60, y: -36, z: -36 }, // end point (in head)
-            ]
-          },
-        ]} />
+          <Leg path={[
+            { x: -30, y: -28, z: -16 }, // start at 1st point (in shell)
+            {
+              arc: [
+                { x: -60, y: -34, z: -24 }, // corner
+                { x: -60, y: -36, z: -36 }, // end point (in head)
+              ]
+            },
+          ]} />
 
-      </Anchor>
+        </Anchor>
 
-      <Anchor ref={leg_r}>
-        <Leg path={[
-          { x: 23, y: 28, z: -16 }, // start at 1st point (in shell)
-          {
-            arc: [
-              { x: 60, y: 34, z: -24 }, // corner
-              { x: 60, y: 36, z: -36 }, // end point (in head)
-            ]
-          },
-        ]} />
+        <Anchor ref={leg_r}>
+          <Leg path={[
+            { x: 23, y: 28, z: -16 }, // start at 1st point (in shell)
+            {
+              arc: [
+                { x: 60, y: 34, z: -24 }, // corner
+                { x: 60, y: 36, z: -36 }, // end point (in head)
+              ]
+            },
+          ]} />
 
-        <Leg path={[
-          { x: 30, y: -28, z: -16 }, // start at 1st point (in shell)
-          {
-            arc: [
-              { x: 60, y: -34, z: -24 }, // corner
-              { x: 60, y: -36, z: -36 }, // end point (in head)
-            ]
-          },
-        ]} />
+          <Leg path={[
+            { x: 30, y: -28, z: -16 }, // start at 1st point (in shell)
+            {
+              arc: [
+                { x: 60, y: -34, z: -24 }, // corner
+                { x: 60, y: -36, z: -36 }, // end point (in head)
+              ]
+            },
+          ]} />
+        </Anchor>
+      </Group>
 
-
-      </Anchor>
       {/* Tail */}
       <Shape path={[
         { x: 0, y: -50, z: -14 }, // start (in shell)

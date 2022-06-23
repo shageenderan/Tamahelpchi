@@ -1,104 +1,53 @@
-import React, { useState } from 'react';
+import Task from "./Task";
 import SideMenu from './SideMenu';
 import Inventory from './Inventory';
-import { PieChart } from 'react-minimal-pie-chart';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-import Hidden from '@material-ui/core/Hidden';
-import {ExerciseTasksModal} from './TasksModal';
-import DirectionsRunIcon from '@material-ui/icons/DirectionsRun';
+import ReactList from 'react-list';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import Image from 'react-bootstrap/Image'
+import turtle0 from '../assets/task turtles/turtle0.png'
+import turtle1 from '../assets/task turtles/turtle1.png'
+import turtle2 from '../assets/task turtles/turtle2.png'
+import turtle3 from '../assets/task turtles/turtle3.png'
+import turtle4 from '../assets/task turtles/turtle4.png'
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        flexGrow: 1,
-        display: "table",
-        position: "absolute",
-        top: 50,
-        left: 0,
-        height: "100%",
-        width: "100%",
+const task_turtles = [turtle0, turtle1, turtle2, turtle3, turtle4]
+
+const useStyles = makeStyles(() => ({
+    card: {
+        padding: "0px 10px 0px 10px"
     },
-    verticalCenter: {
-        textAlign: "center",
-        display: "table-cell",
-        verticalAlign: "middle",
-      }
 }));
 
-export default function Tasks() {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
 
-    const handleClickOpen = () => {
-        setOpen(true);
-    };
-
-    const handleClose = () => {
-        setOpen(false);
-    };
-
+function Tasks({ tasks, onTglStatus }) {
+    const styles = useStyles();
+    
     return (
-        [
+        <div >
             <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <SideMenu></SideMenu>
                 <Inventory></Inventory>
-            </div>,
-            <div>
-                <div className={classes.root}>
-                    <div className={classes.verticalCenter}>
-                         <Grid style={{marginTop: "-50px"}} container spacing={3} justifyContent="space-around" alignItems="center">
-                        <Grid item xs={6} onClick={handleClickOpen} >
-                            <Donut value={80} label="Exercise"></Donut>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Donut value={50} label="Sleep"></Donut>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Donut value={50} label="Eat"></Donut>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Donut value={50} label="Eat"></Donut>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Donut value={50} label="Eat"></Donut>
-                        </Grid>
-                    </Grid>
-                    <ExerciseTasksModal open={open} handleClose={handleClose}></ExerciseTasksModal>
-                    </div>
-                </div>
             </div>
-        ]
-
-
-    )
+            <h1 style={{ textAlign: "center" }}>Tasks</h1>
+            <div style={{ display: "flex", flexDirection:"column", justifyContent: "space-between" }}>
+                <div style={{ overflow: 'auto', maxHeight: "55vh" }}>
+                    <ReactList
+                        itemRenderer={(index, key) => {
+                            return (
+                                <div className={`col-12 ${styles.card}`} key={tasks[index].id}>
+                                    <Task task={tasks[index]} onTglStatus={onTglStatus} />
+                                </div>)
+                        }}
+                        length={tasks.length}
+                        type='simple'
+                    />
+                </div>
+                <div style={{bottom: "10px", position: "absolute", left: "15%"}}>
+                    {tasks.length <= 50 ? <Image height="250px" src={task_turtles[0]} rounded></Image> : null}
+                </div>
+            </div>            
+        </div>
+    );
 }
 
-function Donut(props) {
-    return (<div>
-        <PieChart
-            style={{ width: "90%" }}
-            data={[{ value: props.value, key: 1, color: 'url(#gradient1)' }]}
-            reveal={props.value}
-            lineWidth={20}
-            background="rgb(164 180 204)"
-            totalValue={100}
-            label={({ dataEntry }) => props.label}
-            labelStyle={{
-                fontSize: '17px',
-                // fontFamily: 'sans-serif',
-                fill: 'rgb(9 16 111)',
-            }}
-            labelPosition={0}
-            rounded
-            animate
-        ><defs>
-                <linearGradient id="gradient1">
-                    <stop offset="0%" stopColor="#4CAF50" />
-                    <stop offset="45%" stopColor="#ffb961" />
-                    <stop offset="55%" stopColor="#ffb961" />
-                    <stop offset="100%" stopColor="#C13C37" />
-                </linearGradient>
-            </defs></PieChart>
-    </div>)
-}
-
+export default Tasks;
